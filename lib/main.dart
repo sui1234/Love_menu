@@ -16,6 +16,9 @@ class MyApp extends StatefulWidget{
 class MyAppState extends State<MyApp> {
 
   int _selectedPage = 0;
+
+  bool isSearching = false;
+
   final _pageOptions = [
     Home(),
     NextWeek(),
@@ -29,11 +32,7 @@ class MyAppState extends State<MyApp> {
       title: 'Helper',
       theme: ThemeData.light(),
       home: Scaffold(
-        appBar:AppBar(
-          title:Text('Home'),
-          backgroundColor: Colors.redAccent,
 
-        ),
         body: _pageOptions[_selectedPage],
 
         bottomNavigationBar: BottomNavigationBar(
@@ -50,52 +49,53 @@ class MyAppState extends State<MyApp> {
               BottomNavigationBarItem(
                   icon:Icon(
                       Icons.home,
-                      color:Colors.redAccent,
+                      color:Colors.green[200],
                   ),
                   title:Text(
                       'Home',
-                      style:TextStyle(color:Colors.redAccent)
+                      style:TextStyle(color:Colors.green[200])
                   ),
                   //backgroundColor: Colors.redAccent
               ),
               BottomNavigationBarItem(
                   icon:Icon(
                       Icons.book,
-                      color:Colors.redAccent,
+                      color:Colors.green[200]
                   ),
                   title:Text(
                       'NextWeek',
-                      style:TextStyle(color:Colors.redAccent)
+                      style:TextStyle(color:Colors.green[200])
                   ),
                   //backgroundColor: Colors.redAccent
               ),
               BottomNavigationBarItem(
                   icon:Icon(
                       Icons.favorite,
-                      color:Colors.redAccent,
+                      color:Colors.green[200],
                   ),
                   title:Text(
                     'Favorite',
-                      style:TextStyle(color:Colors.redAccent)
+                      style:TextStyle(color:Colors.green[200])
                   ),
+
                  // backgroundColor: Colors.redAccent
               ),
               BottomNavigationBarItem(
                   icon:Icon(
                       Icons.label,
-                      color:Colors.redAccent,
+                      color:Colors.green[200],
                   ),
                   title:Text(
                       'Ingredients',
-                      style:TextStyle(color:Colors.redAccent)
+                      style:TextStyle(color:Colors.green[200])
                   ),
+
                   //backgroundColor: Colors.redAccent
               )
             ]
         ),
       ),
+
     );
   }
-
-
 }
