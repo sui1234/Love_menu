@@ -1,11 +1,59 @@
 import 'package:flutter/material.dart';
 import 'add_new_menu.dart';
 
-class Home extends StatelessWidget {
+
+class Home extends StatefulWidget {
+  @override
+  _HomeState createState() => _HomeState();
+}
+
+class _HomeState extends State<Home> {
+
+  bool isSearching = false;
+
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
-        body:ListView.builder(
+
+      appBar:AppBar(
+        //isSearching is false => text(home), otherwise => show textField(search here)
+        title:!isSearching
+            ? Text('Home')
+            :TextField(
+
+          style: TextStyle(color:Colors.white),
+          decoration: InputDecoration(
+              icon: Icon(Icons.search,color: Colors.white,),
+              hintText:"Search here",
+              hintStyle: TextStyle(color: Colors.white)
+          ),
+        ),
+        actions: <Widget>[
+          //if isSearching is true,I want to have a cancel button
+          isSearching ?
+          IconButton(
+            icon: Icon(Icons.cancel),
+            onPressed: (){
+              setState(() {
+                this.isSearching = false;
+              });
+            },
+          ):
+          IconButton(
+            icon: Icon(Icons.search),
+            onPressed: (){
+              setState(() {
+                this.isSearching = true;
+                searchMenu();
+              });
+            },
+          )
+        ],
+        backgroundColor: Colors.green[200],
+
+      ),
+      body:ListView.builder(
           itemCount: 6,
           itemBuilder: (context,index){
             return Padding(
@@ -16,10 +64,10 @@ class Home extends StatelessWidget {
 
                   },
                   title:Text(
-                      ''
+                      'aaaa'
                   ),
                   leading:CircleAvatar(
-                    backgroundColor: Colors.redAccent,
+                    backgroundColor: Colors.green[200],
                     //backgroundImage: AssetImage('assets/${locations[index].flag}'),
                   ),
                 ),
@@ -27,6 +75,9 @@ class Home extends StatelessWidget {
             );
           },
         ),
+
+
+//add floatingbutton
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           print('add button is clicked');
@@ -37,9 +88,12 @@ class Home extends StatelessWidget {
           // Add your onPressed code here!
         },
         child: Icon(Icons.add),
-        backgroundColor: Colors.pink,
+        backgroundColor: Colors.green[400],
       ),
     );
 
+  }
+  void searchMenu(){
+    this.isSearching = true;
   }
 }
