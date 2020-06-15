@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:sqflite/sqflite.dart';
 import 'add_new_menu.dart';
+import 'package:love_menu/DBProvider.dart';
+import 'package:love_menu/menu.dart';
 
 
 class Home extends StatefulWidget {
@@ -10,6 +13,27 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
 
   bool isSearching = false;
+  List<String> newMenu;
+  Future _menuFuture;
+
+  //var db = new  DBProvider();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+
+    _menuFuture = getMenu();
+    print("menuFuture is $_menuFuture");
+  }
+
+//get menu information from database
+  getMenu() async{
+    final _menuData = await DBProvider.dbProvider.getAllMenus();
+    print(" sui menuData $_menuData");
+    return _menuData;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -53,36 +77,72 @@ class _HomeState extends State<Home> {
         backgroundColor: Colors.green[200],
 
       ),
-      body:ListView.builder(
-          itemCount: 6,
-          itemBuilder: (context,index){
-            return Padding(
-              padding: const EdgeInsets.symmetric(vertical:1.0,horizontal:4.0),
-              child: Card(
-                child: ListTile(
-                  onTap: () {
 
+      body:
+      FutureBuilder<List<Menu>>(
+        //we call the method, which is in the folder db file database.dart
+        future: DBProvider.dbProvider.getAllMenus(),
+        builder: (BuildContext context, AsyncSnapshot<List<Menu>> snapshot) {
+          if (snapshot.hasData) {
+            return ListView.builder(
+              physics: BouncingScrollPhysics(),
+              //Count all menus
+              itemCount: snapshot.data.length,
+              //all the records that are in the Menu table are passed to an item Menu item = snapshot.data [index];
+              itemBuilder: (BuildContext context, int index){
+                Menu item = snapshot.data[index];
+                //delete one register for id
+                return Dismissible(
+                  key: UniqueKey(),
+                  direction: DismissDirection.endToStart,
+                  background: Container(
+                    alignment: AlignmentDirectional.centerEnd,
+                    color: Colors.red[200],
+                    child: Padding(
+                      padding:EdgeInsets.all(1),
+                      child: Icon(Icons.delete,
+                      color: Colors.white,
+                      ),
+
+                    ),
+                  ),
+                  onDismissed: (diretion) {
+                    DBProvider.dbProvider.delete(item.id);
                   },
-                  title:Text(
-                      'aaaa'
+                  //Now we paint the list with all the records, which will have a number, name, ingredient
+                  child: ListTile(
+                    title: Text(item.name),
+                    subtitle: Text(item.ingredient),
+                    leading: CircleAvatar(child: Text(item.id.toString(),style: TextStyle(color: Colors.green[600]),),backgroundColor: Colors.green[300],),
+                    //If we press one of the cards, it takes us to the page to edit, with the data onTap:
+                    //This method is in the file add_new_menu.dart
+                    onTap: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => AddNewMenu(
+                            true,
+                            //Here is the menu that we want to edit
+                            menu: item,
+                          )
+                      )
+                      );
+                    },
                   ),
-                  leading:CircleAvatar(
-                    backgroundColor: Colors.green[200],
-                    //backgroundImage: AssetImage('assets/${locations[index].flag}'),
-                  ),
-                ),
-              ),
+                );
+              },
             );
-          },
-        ),
+          }else {
+            return Center(child: CircularProgressIndicator());
+          }
+        },
+      ),
 
 
 //add floatingbutton
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           print('add button is clicked');
-          Navigator.push(context,MaterialPageRoute(builder: (context){
-            return AddNewMenu();
+          Navigator.of(context).push(MaterialPageRoute(builder: (context){
+            return AddNewMenu(false);
           }));
 
           // Add your onPressed code here!
